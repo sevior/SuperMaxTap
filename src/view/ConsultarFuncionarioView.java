@@ -5,8 +5,12 @@
  */
 package view;
 
-
+import dao.DB;
 import dao.JpaDao;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
 import model.Funcionario;
@@ -214,36 +218,114 @@ public class ConsultarFuncionarioView extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnConsultarMatriculaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultarMatriculaActionPerformed
-        JpaDao fc = new JpaDao();
-        List<Funcionario> lista = fc.listar("FROM Funcionario "+Integer.parseInt(txtMatricula.getText()));
-        DefaultTableModel dtm = (DefaultTableModel) tbFuncionarios.getModel();
-        dtm.setNumRows(0);
+        JpaDao cc = new JpaDao();
+        if (jComboBoxOp.getSelectedItem().equals("JDBC")) {
+            try {
+                Connection conn = null;
+                conn = DB.getConnection();
+                if (!conn.equals(null)) {
+                    Statement stm = (Statement) conn.createStatement();
+                    ResultSet rd = stm.executeQuery("select primeiroNome, segundoNome,salario,cpf,idade from funcionario where matricula = " + Integer.parseInt(txtMatricula.getText()) + ";");
+                    String nome = null;
+                    String segundo = null;
+                    String salario = null;
+                    String cpf = null;
+                    String idade = null;
 
-        for (Funcionario funcionario : lista) {
-            dtm.addRow(new Object[]{
-                funcionario.getPrimeiroNome(),
-                funcionario.getSegundoNome(),
-                funcionario.getIdade(),
-                funcionario.getCpf(),
-                funcionario.getSenha()
-            });
+                    DefaultTableModel dtm = (DefaultTableModel) tbFuncionarios.getModel();
+                    while (rd.next()) {
+                        nome = rd.getString("primeiroNome");
+                        segundo = rd.getString("segundoNome");
+                        salario = rd.getString("salario");
+                        cpf = rd.getString("cpf");
+                        idade = rd.getString("idade");
+
+                        dtm.addRow(new Object[]{
+                            nome,
+                            segundo,
+                            idade,
+                            cpf,
+                            salario
+
+                        });
+                    }
+
+                }
+            } catch (SQLException e) {
+
+                e.printStackTrace();
+            }
+        } else {
+
+            List<Funcionario> lista = cc.listar("FROM Funcionario where matricula = " + Integer.parseInt(txtMatricula.getText()));
+            DefaultTableModel dtm = (DefaultTableModel) tbFuncionarios.getModel();
+            dtm.setNumRows(0);
+
+            for (Funcionario funcionario : lista) {
+                dtm.addRow(new Object[]{
+                    funcionario.getPrimeiroNome(),
+                    funcionario.getSegundoNome(),
+                    funcionario.getIdade(),
+                    funcionario.getCpf(),
+                    funcionario.getSenha()
+                });
+            }
         }
     }//GEN-LAST:event_btnConsultarMatriculaActionPerformed
 
     private void btnConsultarTodosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultarTodosActionPerformed
-        JpaDao fc = new JpaDao();
-        List<Funcionario> lista = fc.listar("FROM Funcionario");
-        DefaultTableModel dtm = (DefaultTableModel) tbFuncionarios.getModel();
-        dtm.setNumRows(0);
+        JpaDao cc = new JpaDao();
+        if (jComboBoxOp.getSelectedItem().equals("JDBC")) {
+            try {
+                Connection conn = null;
+                conn = DB.getConnection();
+                if (!conn.equals(null)) {
+                    Statement stm = (Statement) conn.createStatement();
+                    ResultSet rd = stm.executeQuery("select primeiroNome, segundoNome,salario,cpf,idade from funcionario;");
+                    String nome = null;
+                    String segundo = null;
+                    String salario = null;
+                    String cpf = null;
+                    String idade = null;
 
-        for (Funcionario funcionario : lista) {
-            dtm.addRow(new Object[]{
-                funcionario.getPrimeiroNome(),
-                funcionario.getSegundoNome(),
-                funcionario.getIdade(),
-                funcionario.getCpf(),
-                funcionario.getSenha()
-            });
+                    DefaultTableModel dtm = (DefaultTableModel) tbFuncionarios.getModel();
+                    while (rd.next()) {
+                        nome = rd.getString("primeiroNome");
+                        segundo = rd.getString("segundoNome");
+                        salario = rd.getString("salario");
+                        cpf = rd.getString("cpf");
+                        idade = rd.getString("idade");
+
+                        dtm.addRow(new Object[]{
+                            nome,
+                            segundo,
+                            idade,
+                            cpf,
+                            salario
+
+                        });
+                    }
+
+                }
+            } catch (SQLException e) {
+
+                e.printStackTrace();
+            }
+        } else {
+
+            List<Funcionario> lista = cc.listar("FROM Funcionario");
+            DefaultTableModel dtm = (DefaultTableModel) tbFuncionarios.getModel();
+            dtm.setNumRows(0);
+
+            for (Funcionario funcionario : lista) {
+                dtm.addRow(new Object[]{
+                    funcionario.getPrimeiroNome(),
+                    funcionario.getSegundoNome(),
+                    funcionario.getIdade(),
+                    funcionario.getCpf(),
+                    funcionario.getSenha()
+                });
+            }
         }
 
     }//GEN-LAST:event_btnConsultarTodosActionPerformed

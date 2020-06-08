@@ -206,7 +206,7 @@ public class LoginView extends javax.swing.JFrame {
         if (txtEmail.getText().contains(".com")) {
             List<Cliente> listCli = cc.listar("FROM Cliente");
             for (Cliente cliente1 : listCli) {
-                if (txtEmail.getText().equals(cliente1.getEmail().toUpperCase()) && txtSenha.getText().equals(cliente1.getSenha())) {
+                if (txtEmail.getText().equals(cliente1.getEmail()) && txtSenha.getText().equals(cliente1.getSenha())) {
                     Control.cliente = cliente1;
                     pu.show(true);
                     this.dispose();
@@ -236,7 +236,7 @@ public class LoginView extends javax.swing.JFrame {
             List<Gerente> listFun = cc.listar("FROM Gerente");
             for (Gerente gerente : listFun) {
 
-                if (txtEmail.getText().equals(gerente.getNick().toUpperCase()) && txtSenha.getText().equals(gerente.getSenha())) {
+                if (txtEmail.getText().equals(gerente.getNick()) && txtSenha.getText().equals(gerente.getSenha())) {
                     pp.show(true);
                     this.dispose();
                     JOptionPane.showMessageDialog(null, "Bem Vindo " + listFun.get(0).getPrimeiroNome());

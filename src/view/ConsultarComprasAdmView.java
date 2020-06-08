@@ -5,6 +5,17 @@
  */
 package view;
 
+import dao.DB;
+import dao.JpaDao;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.List;
+import javax.swing.table.DefaultTableModel;
+import model.Categoria;
+import model.Compra;
+
 /**
  *
  * @author junior
@@ -35,7 +46,7 @@ public class ConsultarComprasAdmView extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        txtid = new javax.swing.JTextField();
         jButton2 = new javax.swing.JButton();
         jLabel16 = new javax.swing.JLabel();
         jComboBoxOp = new javax.swing.JComboBox<>();
@@ -77,6 +88,11 @@ public class ConsultarComprasAdmView extends javax.swing.JFrame {
         jButton1.setBackground(new java.awt.Color(45, 76, 139));
         jButton1.setForeground(new java.awt.Color(255, 255, 255));
         jButton1.setText("Consultar");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jLabel3.setForeground(new java.awt.Color(45, 76, 139));
         jLabel3.setText("Consultar por ID:");
@@ -84,6 +100,11 @@ public class ConsultarComprasAdmView extends javax.swing.JFrame {
         jButton2.setBackground(new java.awt.Color(45, 76, 139));
         jButton2.setForeground(new java.awt.Color(255, 255, 255));
         jButton2.setText("Consultar");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         jLabel16.setText("Operar com:");
 
@@ -100,7 +121,7 @@ public class ConsultarComprasAdmView extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel3)
                         .addGap(186, 186, 186)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(txtid, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(41, 41, 41)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButton2)
@@ -127,7 +148,7 @@ public class ConsultarComprasAdmView extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtid, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton2))
                 .addContainerGap(53, Short.MAX_VALUE))
         );
@@ -139,7 +160,7 @@ public class ConsultarComprasAdmView extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Nome", "Preço", "Tempo de garantia", "Descrição", "Valor Total", "Categoria"
+                "Nome", "Preço", "Tempo de garantia", "Descrição", "Modo", "Categoria"
             }
         ));
         jScrollPane1.setViewportView(jTable1);
@@ -195,6 +216,120 @@ public class ConsultarComprasAdmView extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        JpaDao cc = new JpaDao();
+        if (jComboBoxOp.getSelectedItem().equals("JDBC")) {
+            try {
+                Connection conn = null;
+                conn = DB.getConnection();
+                if (!conn.equals(null)) {
+                    Statement stm = (Statement) conn.createStatement();
+                    ResultSet rd = stm.executeQuery("select produto.nome,produto.descricao,produto.preco,produto.tempoGarantia, categoria.nomeCategoria,modocompra.modo from compra inner join produto on produto.id =compra.produto_id inner join categoria on produto.categoria_id = categoria.id inner join modocompra;");
+                    String nomePro = null;
+                    String preco = null;
+                    String tempo = null;
+                     String descricao = null;
+                     String modo = null;
+                     String categoria = null;
+                   DefaultTableModel dtm = (DefaultTableModel) jTable1.getModel();
+                    while (rd.next()) {
+                        nomePro = rd.getString("nomeCategoria");
+                        preco = rd.getString("preco");
+                        tempo = rd.getString("tempoGarantia");
+                        descricao = rd.getString("descricao");
+                        modo = rd.getString("modo");
+                        categoria = rd.getString("nomeCategoria");
+                        
+                        dtm.addRow(new Object[]{
+                            nomePro,
+                            preco,
+                            tempo,
+                            descricao,
+                            modo,
+                            categoria
+                        });
+                    }
+                 
+                }
+            } catch (SQLException e) {
+
+                e.printStackTrace();
+            }
+        } else {
+            List<Compra> lista = cc.listar("FROM Compra");
+            DefaultTableModel dtm = (DefaultTableModel) jTable1.getModel();
+            dtm.setNumRows(0);
+
+            for (Compra compra : lista) {
+                dtm.addRow(new Object[]{
+                    compra.getId(),
+                    compra.getProduto().getNome(),
+                    compra.getProduto().getPreco(),
+                    compra.getProduto().getTempoGarantia(),
+                    compra.getProduto().getDescricao(),
+                    compra.getProduto().getCategoria().getNomeCategoria()
+                });
+            }
+    } 
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+       JpaDao cc = new JpaDao();
+        if (jComboBoxOp.getSelectedItem().equals("JDBC")) {
+            try {
+                Connection conn = null;
+                conn = DB.getConnection();
+                if (!conn.equals(null)) {
+                    Statement stm = (Statement) conn.createStatement();
+                    ResultSet rd = stm.executeQuery("select produto.nome,produto.descricao,produto.preco,produto.tempoGarantia, categoria.nomeCategoria,modocompra.modo from compra inner join produto on produto.id =compra.produto_id inner join categoria on produto.categoria_id = categoria.id inner join modocompra where cliente_email = '"+txtid.getText()+"' ;");
+                    String nomePro = null;
+                    String preco = null;
+                    String tempo = null;
+                     String descricao = null;
+                     String modo = null;
+                     String categoria = null;
+                   DefaultTableModel dtm = (DefaultTableModel) jTable1.getModel();
+                    while (rd.next()) {
+                        nomePro = rd.getString("nomeCategoria");
+                        preco = rd.getString("preco");
+                        tempo = rd.getString("tempoGarantia");
+                        descricao = rd.getString("descricao");
+                        modo = rd.getString("modo");
+                        categoria = rd.getString("nomeCategoria");
+                        
+                        dtm.addRow(new Object[]{
+                            nomePro,
+                            preco,
+                            tempo,
+                            descricao,
+                            modo,
+                            categoria
+                        });
+                    }
+                 
+                }
+            } catch (SQLException e) {
+
+                e.printStackTrace();
+            }
+        } else {
+            List<Compra> lista = cc.listar("FROM Compra where cliente_email = '"+txtid.getText()+"'");
+            DefaultTableModel dtm = (DefaultTableModel) jTable1.getModel();
+            dtm.setNumRows(0);
+
+            for (Compra compra : lista) {
+                dtm.addRow(new Object[]{
+                    compra.getId(),
+                    compra.getProduto().getNome(),
+                    compra.getProduto().getPreco(),
+                    compra.getProduto().getTempoGarantia(),
+                    compra.getProduto().getDescricao(),
+                    compra.getProduto().getCategoria().getNomeCategoria()
+                });
+            }
+    }  
+    }//GEN-LAST:event_jButton2ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -244,6 +379,6 @@ public class ConsultarComprasAdmView extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
+    private javax.swing.JTextField txtid;
     // End of variables declaration//GEN-END:variables
 }

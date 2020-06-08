@@ -380,7 +380,7 @@ public class CadastroGerenteView extends javax.swing.JFrame {
         JpaDao control = new JpaDao();
         Control controlV = new Control();
 
-        if (controlV.gerente(txtSenha.getText(), txtNomeFuncionario.getText(), txtSobreNomeFuncionario.getText(), txtDataNascimento.getText(), txtCpf.getText(), txtTelefone.getText(), txtEmail.getText(), txtRua.getText(), txtTelefone.getText(), txtBairro.getText(), txtCidade.getText(), txtUf.getText(), txtSalario.getText(),txtNick.getText())) {
+        if (controlV.gerente(txtSenha.getText(), txtNomeFuncionario.getText(), txtSobreNomeFuncionario.getText(), txtDataNascimento.getText(), txtCpf.getText(), txtTelefone.getText(), txtEmail.getText(), txtRua.getText(), txtTelefone.getText(), txtBairro.getText(), txtCidade.getText(), txtUf.getText(), txtSalario.getText(), txtNick.getText())) {
 
             try {
                 throw new ExceptionCamposVazios();
@@ -388,8 +388,8 @@ public class CadastroGerenteView extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, ex);
             }
 
-           }else{
-       if (jComboBoxOp.getSelectedItem().equals("JDBC")) {
+        } else {
+            if (jComboBoxOp.getSelectedItem().equals("JDBC")) {
                 try {
                     Connection conn = null;
                     conn = DB.getConnection();
@@ -397,8 +397,8 @@ public class CadastroGerenteView extends javax.swing.JFrame {
                         Statement stm2 = (Statement) conn.createStatement();
                         Statement stm = (Statement) conn.createStatement();
                         stm.executeUpdate("insert into `contato` (`email`,`numTelefone`) values ('" + txtEmail.getText() + "','" + txtTelefone.getText() + "');");
-                        stm2.executeUpdate("insert into `endereco` (`bairro`,`cidade`,`numero`,`rua`,`uf`) values ('" + txtBairro.getText() + "','" + txtCidade.getText() + "','" + txtNum.getText() + "','" + txtRua.getText() + "','" + txtUf.getText() + "');");
-                        ResultSet rs = stm.executeQuery("select id from contato where email = " + txtEmail.getText() + ";");
+                        stm2.executeUpdate("insert into `endereco` (`bairro`,`cidade`,`numero`,`rua`,`uf`) values ('" + txtBairro.getText() + "','" + txtCidade.getText() + "'," + Integer.parseInt(txtNum.getText()) + ",'" + txtRua.getText() + "','" + txtUf.getText() + "');");
+                        ResultSet rs = stm.executeQuery("select id from contato where email = '" + txtEmail.getText() + "' and numTelefone = "+txtTelefone.getText()+";");
                         ResultSet rd = stm2.executeQuery("select id from endereco where bairro = " + txtBairro.getText() + " and cidade = " + txtCidade.getText() + " and numero = " + txtNum.getText() + " and rua = " + txtRua.getText() + " and uf = " + txtUf.getText() + ";");
                         String id = null;
                         while (rs.next()) {
@@ -410,9 +410,9 @@ public class CadastroGerenteView extends javax.swing.JFrame {
                         }
                         int ids = Integer.parseInt(id);
                         int idsa = Integer.parseInt(id2);
-                        stm.executeUpdate("insert into `gerente` (`cpf`,`idade`,`primeiroNome`,`segundoNome`,`nick`,`salario`,`senha`,`endereco_id`,`contatos_id`) values ('" + txtCpf.getText() + "','" + txtDataNascimento.getText() + "','" + txtNomeFuncionario.getText() + "','" + txtSobreNomeFuncionario.getText() + "','"+txtNick.getText()+"','"+txtSalario.getText()+"','" + txtSenha.getText() + "'," + idsa + "," + ids + ");");
+                        stm.executeUpdate("insert into `gerente` (`cpf`,`idade`,`primeiroNome`,`segundoNome`,`nick`,`salario`,`senha`,`endereco_id`,`contatos_id`) values ('" + txtCpf.getText() + "','" + txtDataNascimento.getText() + "','" + txtNomeFuncionario.getText() + "','" + txtSobreNomeFuncionario.getText() + "','" + txtNick.getText() + "','" + txtSalario.getText() + "','" + txtSenha.getText() + "'," + idsa + "," + ids + ");");
                         JOptionPane.showMessageDialog(null, "Gerente cadastrada com sucesso!");
-            this.dispose();
+                        this.dispose();
                     }
 
                 } catch (SQLException e) {
@@ -420,13 +420,14 @@ public class CadastroGerenteView extends javax.swing.JFrame {
                     e.printStackTrace();
                 }
             } else {
-            BigInteger salario = new BigInteger(txtSalario.getText());
-            control.salvar(new Gerente(txtNick.getText(),txtSenha.getText(),salario, txtNomeFuncionario.getText().toUpperCase(), txtSobreNomeFuncionario.getText().toUpperCase(), txtDataNascimento.getText().toUpperCase(), txtCpf.getText(), new Contato(txtEmail.getText().toUpperCase(), txtTelefone.getText()), new Endereco(txtRua.getText().toUpperCase(), Integer.parseInt(txtNum.getText()), txtBairro.getText().toUpperCase(), txtCidade.getText().toUpperCase(), txtUf.getText().toUpperCase())));
-            JOptionPane.showMessageDialog(null, "Gerente cadastrada com sucesso!");
-            this.dispose();
-        }
+                BigInteger salario = new BigInteger(txtSalario.getText());
+                control.salvar(new Gerente(txtNick.getText(), txtSenha.getText(), salario, txtNomeFuncionario.getText(), txtSobreNomeFuncionario.getText(), txtDataNascimento.getText(), txtCpf.getText(), new Contato(txtEmail.getText(), txtTelefone.getText()), new Endereco(txtRua.getText(), Integer.parseInt(txtNum.getText()), txtBairro.getText(), txtCidade.getText(), txtUf.getText())));
+                JOptionPane.showMessageDialog(null, "Gerente cadastrada com sucesso!");
+                this.dispose();
+            }
     }//GEN-LAST:event_btnCadastrarActionPerformed
     }
+
     /**
      * @param args the command line arguments
      */

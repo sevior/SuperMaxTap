@@ -5,7 +5,12 @@
  */
 package view;
 
+import dao.DB;
 import dao.JpaDao;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -42,7 +47,6 @@ public class ConsultarFabricanteView extends javax.swing.JFrame {
         jLabel3 = new javax.swing.JLabel();
         jButton1 = new javax.swing.JButton();
         jButton2 = new javax.swing.JButton();
-        btnExcluir = new javax.swing.JButton();
         txtCnpj = new javax.swing.JFormattedTextField();
         jComboBoxOp = new javax.swing.JComboBox<>();
         jLabel16 = new javax.swing.JLabel();
@@ -105,15 +109,6 @@ public class ConsultarFabricanteView extends javax.swing.JFrame {
             }
         });
 
-        btnExcluir.setBackground(new java.awt.Color(45, 76, 139));
-        btnExcluir.setForeground(new java.awt.Color(255, 255, 255));
-        btnExcluir.setText("Excluir");
-        btnExcluir.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnExcluirActionPerformed(evt);
-            }
-        });
-
         try {
             txtCnpj.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("##.###.###/####-##")));
         } catch (java.text.ParseException ex) {
@@ -139,8 +134,7 @@ public class ConsultarFabricanteView extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(jButton1, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnExcluir, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(140, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
@@ -163,9 +157,7 @@ public class ConsultarFabricanteView extends javax.swing.JFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(jButton1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 7, Short.MAX_VALUE)
-                .addComponent(btnExcluir)
-                .addContainerGap())
+                .addContainerGap(41, Short.MAX_VALUE))
         );
 
         tbFabricante.setModel(new javax.swing.table.DefaultTableModel(
@@ -230,8 +222,45 @@ public class ConsultarFabricanteView extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        JpaDao fc = new JpaDao();
-        List<Fabricante> lf = fc.listar("FROM Fabricante WHERE cnpj ='" + txtCnpj.getText()+"'");
+       JpaDao cc = new JpaDao();
+        if (jComboBoxOp.getSelectedItem().equals("JDBC")) {
+            try {
+                Connection conn = null;
+                conn = DB.getConnection();
+                if (!conn.equals(null)) {
+                    Statement stm = (Statement) conn.createStatement();
+                    ResultSet rd = stm.executeQuery("select fabricante.nome,fabricante.cnpj, contato.email,contato.numTelefone from fabricante inner join contato on fabricante.contato_id = contato.id where fabricante.cnpj = '"+txtCnpj.getText()+"';");
+                    String nome = null;
+                    String cnpj = null;
+                    String email = null;
+                     String telefone = null;
+
+                   DefaultTableModel dtm = (DefaultTableModel) tbFabricante.getModel();
+                    while (rd.next()) {
+                        nome = rd.getString("nome");
+                        cnpj = rd.getString("cnpj");
+                         telefone = rd.getString("numTelefone");
+                        email = rd.getString("email");
+                       
+       
+                        
+                        dtm.addRow(new Object[]{
+                            
+                            cnpj,
+                            nome,
+                            telefone,
+                            email,
+                            
+                        });
+                    }
+                 
+                }
+            } catch (SQLException e) {
+
+                e.printStackTrace();
+            }
+        } else {
+        List<Fabricante> lf = cc.listar("FROM Fabricante WHERE cnpj ='" + txtCnpj.getText()+"'");
         DefaultTableModel dtm = (DefaultTableModel) tbFabricante.getModel();
         dtm.setNumRows(0);
 
@@ -244,13 +273,50 @@ public class ConsultarFabricanteView extends javax.swing.JFrame {
                 fabricante.getContato().getEmail()
             });
         }
-
+        }
 
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        JpaDao fc = new JpaDao();
-        List<Fabricante> lf = fc.listar("FROM Fabricante");
+         JpaDao cc = new JpaDao();
+        if (jComboBoxOp.getSelectedItem().equals("JDBC")) {
+            try {
+                Connection conn = null;
+                conn = DB.getConnection();
+                if (!conn.equals(null)) {
+                    Statement stm = (Statement) conn.createStatement();
+                    ResultSet rd = stm.executeQuery("select fabricante.nome,fabricante.cnpj, contato.email,contato.numTelefone from fabricante inner join contato on fabricante.contato_id = contato.id ;");
+                    String nome = null;
+                    String cnpj = null;
+                    String email = null;
+                     String telefone = null;
+
+                   DefaultTableModel dtm = (DefaultTableModel) tbFabricante.getModel();
+                    while (rd.next()) {
+                        nome = rd.getString("nome");
+                        cnpj = rd.getString("cnpj");
+                         telefone = rd.getString("numTelefone");
+                        email = rd.getString("email");
+                       
+       
+                        
+                        dtm.addRow(new Object[]{
+                            
+                            cnpj,
+                            nome,
+                            telefone,
+                            email,
+                            
+                        });
+                    }
+                 
+                }
+            } catch (SQLException e) {
+
+                e.printStackTrace();
+            }
+        } else {
+        List<Fabricante> lf = cc.listar("FROM Fabricante");
         DefaultTableModel dtm = (DefaultTableModel) tbFabricante.getModel();
         dtm.setNumRows(0);
 
@@ -263,17 +329,8 @@ public class ConsultarFabricanteView extends javax.swing.JFrame {
                 fabricante.getContato().getEmail()
             });
         }
-    }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
-        if (tbFabricante.getSelectedRow() == -1) {
-            JOptionPane.showMessageDialog(null, "Selecione um Fabricante para excluir");
-        } else {
-            DefaultTableModel dtm = (DefaultTableModel) tbFabricante.getModel();
-            dtm.removeRow(tbFabricante.getSelectedRow());
-
         }
-    }//GEN-LAST:event_btnExcluirActionPerformed
+    }//GEN-LAST:event_jButton1ActionPerformed
     private void carregarTabela() {
         DefaultTableModel dtm = (DefaultTableModel) tbFabricante.getModel();
         dtm.setNumRows(0);
@@ -321,7 +378,6 @@ public class ConsultarFabricanteView extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnExcluir;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton2;
     private javax.swing.JComboBox<String> jComboBoxOp;

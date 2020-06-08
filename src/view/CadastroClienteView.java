@@ -415,8 +415,8 @@ public class CadastroClienteView extends javax.swing.JFrame {
                         Statement stm = (Statement) conn.createStatement();
                         stm.executeUpdate("insert into `contato` (`email`,`numTelefone`) values ('" + txtEmail.getText() + "','" + txtTelefone.getText() + "');");
                         stm2.executeUpdate("insert into `endereco` (`bairro`,`cidade`,`numero`,`rua`,`uf`) values ('" + txtBairro.getText() + "','" + txtCidade.getText() + "','" + txtnumero.getText() + "','" + txtRua.getText() + "','" + txtUf.getText() + "');");
-                        ResultSet rs = stm.executeQuery("select id from contato where email = " + txtEmail.getText() + ";");
-                        ResultSet rd = stm2.executeQuery("select id from endereco where bairro = " + txtBairro.getText() + " and cidade = " + txtCidade.getText() + " and numero = " + txtnumero.getText() + " and rua = " + txtRua.getText() + " and uf = " + txtUf.getText() + ";");
+                        ResultSet rs = stm.executeQuery("select id from contato where email = '" + txtEmail.getText() + "' and numTelefone = "+txtTelefone.getText()+";");
+                        ResultSet rd = stm2.executeQuery("select id from endereco where bairro = " + txtBairro.getText() + " and cidade = " + txtCidade.getText() + " and numero = " + Integer.parseInt(txtnumero.getText()) + " and rua = " + txtRua.getText() + " and uf = " + txtUf.getText() + ";");
                         String id = null;
                         while (rs.next()) {
                             id = rs.getString("id");
@@ -437,7 +437,7 @@ public class CadastroClienteView extends javax.swing.JFrame {
                 }
             } else {
 
-                control.salvar(new Cliente(txtEmail.getText(), txtSenha.getText(), txtNomeCliente.getText().toUpperCase(), txtSobreNomeCliente.getText().toUpperCase(), txtDataNascimento.getText(), txtCpf.getText(), new Contato(txtEmail.getText().toUpperCase(), txtTelefone.getText()), new Endereco(txtRua.getText().toUpperCase(), Integer.parseInt(txtnumero.getText()), txtBairro.getText().toUpperCase(), txtCidade.getText(), txtUf.getText())));
+                control.salvar(new Cliente(txtEmail.getText(), txtSenha.getText(), txtNomeCliente.getText(), txtSobreNomeCliente.getText(), txtDataNascimento.getText(), txtCpf.getText(), new Contato(txtEmail.getText(), txtTelefone.getText()), new Endereco(txtRua.getText().toUpperCase(), Integer.parseInt(txtnumero.getText()), txtBairro.getText(), txtCidade.getText(), txtUf.getText())));
                 JOptionPane.showMessageDialog(null, "Cliente cadastrado(a) com sucesso!");
                 this.limparCampos();
             }

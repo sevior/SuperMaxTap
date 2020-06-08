@@ -5,8 +5,13 @@
  */
 package view;
 
-
+import dao.DB;
 import dao.JpaDao;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
 import model.Categoria;
@@ -218,7 +223,34 @@ public class ConsultarCategoriaView extends javax.swing.JFrame {
 
     private void btnConsultarIdActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultarIdActionPerformed
         JpaDao cc = new JpaDao();
-        List<Categoria> lista = cc.listar("FROM Categoria where id = "+Integer.parseInt(txtId.getText()));
+        if(jComboBoxOp.getSelectedItem().equals("JDBC")){
+         try {
+                Connection conn = null;
+                conn = DB.getConnection();
+                if (!conn.equals(null)) {
+                    Statement stm = (Statement) conn.createStatement();
+                    ResultSet rd = stm.executeQuery("select * from categoria where id = "+Integer.parseInt(txtId.getText())+";");
+                    String id = null;
+                    String nome = null;
+                   DefaultTableModel dtm = (DefaultTableModel) tbCategoria.getModel();
+                    while (rd.next()) {
+                        id = rd.getString("id");
+                        nome = rd.getString("nomeCategoria");
+                        dtm.addRow(new Object[]{
+                            id,
+                            nome
+                        });
+                    }
+                 
+                }
+            } catch (SQLException e) {
+
+                e.printStackTrace();
+            }
+        }else{
+        
+        }
+        List<Categoria> lista = cc.listar("FROM Categoria where id = " + Integer.parseInt(txtId.getText()));
         DefaultTableModel dtm = (DefaultTableModel) tbCategoria.getModel();
         dtm.setNumRows(0);
         for (Categoria categoria : lista) {
@@ -233,17 +265,43 @@ public class ConsultarCategoriaView extends javax.swing.JFrame {
 
     private void btnConsultarTodosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultarTodosActionPerformed
         JpaDao cc = new JpaDao();
-        List<Categoria> lista = cc.listar("FROM Categoria");
-        DefaultTableModel dtm = (DefaultTableModel) tbCategoria.getModel();
-        dtm.setNumRows(0);
-        
-        for (Categoria categoria : lista) {
-            dtm.addRow(new Object[]{
-                categoria.getId(),
-                categoria.getNomeCategoria()
-            });
-        }
+        if (jComboBoxOp.getSelectedItem().equals("JDBC")) {
+            try {
+                Connection conn = null;
+                conn = DB.getConnection();
+                if (!conn.equals(null)) {
+                    Statement stm = (Statement) conn.createStatement();
+                    ResultSet rd = stm.executeQuery("select * from categoria ;");
+                    String id = null;
+                    String nome = null;
+                   DefaultTableModel dtm = (DefaultTableModel) tbCategoria.getModel();
+                    while (rd.next()) {
+                        id = rd.getString("id");
+                        nome = rd.getString("nomeCategoria");
+                        dtm.addRow(new Object[]{
+                            id,
+                            nome
+                        });
+                    }
+                 
+                }
+            } catch (SQLException e) {
+
+                e.printStackTrace();
+            }
+        } else {
+            List<Categoria> lista = cc.listar("FROM Categoria");
+            DefaultTableModel dtm = (DefaultTableModel) tbCategoria.getModel();
+            dtm.setNumRows(0);
+
+            for (Categoria categoria : lista) {
+                dtm.addRow(new Object[]{
+                    categoria.getId(),
+                    categoria.getNomeCategoria()
+                });
+            }
     }//GEN-LAST:event_btnConsultarTodosActionPerformed
+    }
 
     /**
      * @param args the command line arguments

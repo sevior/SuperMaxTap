@@ -410,7 +410,7 @@ public class CadastroFuncionarioView extends javax.swing.JFrame {
                         Statement stm2 = (Statement) conn.createStatement();
                         Statement stm = (Statement) conn.createStatement();
                         stm.executeUpdate("insert into `contato` (`email`,`numTelefone`) values ('" + txtEmail.getText() + "','" + txtTelefone.getText() + "');");
-                        stm2.executeUpdate("insert into `endereco` (`bairro`,`cidade`,`numero`,`rua`,`uf`) values ('" + txtBairro.getText() + "','" + txtCidade.getText() + "','" + txtNum.getText() + "','" + txtRua.getText() + "','" + txtUf.getText() + "');");
+                        stm2.executeUpdate("insert into `endereco` (`bairro`,`cidade`,`numero`,`rua`,`uf`) values ('" + txtBairro.getText() + "','" + txtCidade.getText() + "'," + Integer.parseInt(txtNum.getText()) + ",'" + txtRua.getText() + "','" + txtUf.getText() + "');");
                         ResultSet rs = stm.executeQuery("select id from contato where email = " + txtEmail.getText() + ";");
                         ResultSet rd = stm2.executeQuery("select id from endereco where bairro = " + txtBairro.getText() + " and cidade = " + txtCidade.getText() + " and numero = " + txtNum.getText() + " and rua = " + txtRua.getText() + " and uf = " + txtUf.getText() + ";");
                         String id = null;
@@ -433,7 +433,7 @@ public class CadastroFuncionarioView extends javax.swing.JFrame {
                 }
             } else {
             BigInteger salario = new BigInteger(txtSalario.getText());
-            control.salvar(new Funcionario(txtSenha.getText(), salario, txtNomeFuncionario.getText().toUpperCase(), txtSobreNomeFuncionario.getText().toUpperCase(), txtDataNascimento.getText().toUpperCase(), txtCpf.getText(), new Contato(txtEmail.getText().toUpperCase(), txtTelefone.getText()), new Endereco(txtRua.getText().toUpperCase(), Integer.parseInt(txtNum.getText()), txtBairro.getText().toUpperCase(), txtCidade.getText().toUpperCase(), txtUf.getText().toUpperCase())));
+            control.salvar(new Funcionario(txtSenha.getText(), salario, txtNomeFuncionario.getText(), txtSobreNomeFuncionario.getText(), txtDataNascimento.getText(), txtCpf.getText(), new Contato(txtEmail.getText(), txtTelefone.getText()), new Endereco(txtRua.getText(), Integer.parseInt(txtNum.getText()), txtBairro.getText(), txtCidade.getText(), txtUf.getText())));
             JOptionPane.showMessageDialog(null, "Funcionário(a) cadastrado(a) com sucesso!");
             this.limparCampos();
 

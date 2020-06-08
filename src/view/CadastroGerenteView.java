@@ -5,7 +5,7 @@
  */
 package view;
 
-import control.JpaControl;
+import dao.JpaDao;
 import controlView.Control;
 import exceptions.ExceptionCamposVazios;
 import java.math.BigInteger;
@@ -26,6 +26,7 @@ public class CadastroGerenteView extends javax.swing.JFrame {
      */
     public CadastroGerenteView() {
         initComponents();
+        setExtendedState(MAXIMIZED_BOTH);
     }
 
     /**
@@ -353,7 +354,7 @@ public class CadastroGerenteView extends javax.swing.JFrame {
     }//GEN-LAST:event_txtSenhaActionPerformed
 
     private void btnCadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastrarActionPerformed
-        JpaControl control = new JpaControl();
+        JpaDao control = new JpaDao();
         Control controlV = new Control();
 
         if (controlV.gerente(txtSenha.getText(), txtNomeFuncionario.getText(), txtSobreNomeFuncionario.getText(), txtDataNascimento.getText(), txtCpf.getText(), txtTelefone.getText(), txtEmail.getText(), txtRua.getText(), txtTelefone.getText(), txtBairro.getText(), txtCidade.getText(), txtUf.getText(), txtSalario.getText(),txtNick.getText())) {

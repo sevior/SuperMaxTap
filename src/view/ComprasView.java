@@ -5,6 +5,18 @@
  */
 package view;
 
+import controlView.Control;
+import dao.JpaDao;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import model.Categoria;
+import model.Compra;
+
+import model.ModoCompra;
+import model.Produto;
+
 /**
  *
  * @author junior
@@ -14,8 +26,33 @@ public class ComprasView extends javax.swing.JFrame {
     /**
      * Creates new form ComprasView
      */
+    private List<Produto> listP = new ArrayList<>();
+    private List<Categoria> listC = new ArrayList<>();
+    private List<ModoCompra> listF = new ArrayList<>();
+    List<Compra> listCom = new ArrayList<>();
+    private Categoria ca = new Categoria();
+    private Produto p = new Produto();
+
     public ComprasView() {
         initComponents();
+        setExtendedState(MAXIMIZED_BOTH);
+        JpaDao control = new JpaDao();
+        listC = control.listar("from Categoria");
+        listF = control.listar("from ModoCompra");
+
+        for (Categoria c : listC) {
+            jCCategoria.addItem(c);
+        }
+        for (ModoCompra f : listF) {
+            jCPagamento.addItem(f);
+        }
+
+        ca = (Categoria) jCCategoria.getSelectedItem();
+        listP = control.listar("from Produto p where p.categoria.nomeCategoria = '" + ca + "'");
+        for (Produto p : listP) {
+            jCProduto.addItem(p);
+        }
+
     }
 
     /**
@@ -31,16 +68,16 @@ public class ComprasView extends javax.swing.JFrame {
         jPanel2 = new javax.swing.JPanel();
         jLabel1 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
-        jComboBox1 = new javax.swing.JComboBox<>();
+        jCCategoria = new javax.swing.JComboBox<>();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jComboBox2 = new javax.swing.JComboBox<>();
+        jCPagamento = new javax.swing.JComboBox<>();
         jLabel4 = new javax.swing.JLabel();
-        jComboBox3 = new javax.swing.JComboBox<>();
-        jButton1 = new javax.swing.JButton();
+        jCProduto = new javax.swing.JComboBox<>();
+        btAdd = new javax.swing.JButton();
         jPanel4 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tbCompras = new javax.swing.JTable();
         jButton2 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -70,9 +107,21 @@ public class ComprasView extends javax.swing.JFrame {
         );
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Área de Compras", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Dialog", 0, 12), new java.awt.Color(45, 76, 139))); // NOI18N
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Área de Compras", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(45, 76, 139))); // NOI18N
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jCCategoria.addFocusListener(new java.awt.event.FocusAdapter() {
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                jCCategoriaFocusGained(evt);
+            }
+            public void focusLost(java.awt.event.FocusEvent evt) {
+                jCCategoriaFocusLost(evt);
+            }
+        });
+        jCCategoria.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jCCategoriaMouseClicked(evt);
+            }
+        });
 
         jLabel2.setForeground(new java.awt.Color(45, 76, 139));
         jLabel2.setText("Categoria:");
@@ -80,16 +129,17 @@ public class ComprasView extends javax.swing.JFrame {
         jLabel3.setForeground(new java.awt.Color(45, 76, 139));
         jLabel3.setText("Forma de Pagamento:");
 
-        jComboBox2.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "A Vísta", "Cartão" }));
-
         jLabel4.setForeground(new java.awt.Color(45, 76, 139));
         jLabel4.setText("Produto:");
 
-        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-
-        jButton1.setBackground(new java.awt.Color(45, 76, 139));
-        jButton1.setForeground(new java.awt.Color(255, 255, 255));
-        jButton1.setText("Adicionar");
+        btAdd.setBackground(new java.awt.Color(45, 76, 139));
+        btAdd.setForeground(new java.awt.Color(255, 255, 255));
+        btAdd.setText("Adicionar");
+        btAdd.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btAddActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -103,10 +153,10 @@ public class ComprasView extends javax.swing.JFrame {
                     .addComponent(jLabel2))
                 .addGap(18, 73, Short.MAX_VALUE)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jCPagamento, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jCProduto, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jCCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btAdd, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(218, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
@@ -114,46 +164,50 @@ public class ComprasView extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap(20, Short.MAX_VALUE)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jCCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel2))
                 .addGap(18, 18, Short.MAX_VALUE)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(jComboBox2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jCPagamento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
-                    .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(jCProduto, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
-                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(btAdd, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(20, Short.MAX_VALUE))
         );
 
         jPanel4.setBackground(new java.awt.Color(255, 255, 255));
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tbCompras.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
 
             },
             new String [] {
-                "Nome", "Preço", "Tempo de garantia", "Descrição"
+                "Nome", "Preço", "Tempo de garantia (Dias)", "Descrição", "Categoria"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane1.setViewportView(tbCompras);
 
         jButton2.setBackground(new java.awt.Color(45, 76, 139));
         jButton2.setForeground(new java.awt.Color(255, 255, 255));
         jButton2.setText("Comprar");
+        jButton2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton2ActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
         jPanel4.setLayout(jPanel4Layout);
         jPanel4Layout.setHorizontalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel4Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 821, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 833, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel4Layout.setVerticalGroup(
@@ -173,7 +227,7 @@ public class ComprasView extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
                 .addContainerGap(25, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, 824, Short.MAX_VALUE)
                     .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap(25, Short.MAX_VALUE))
         );
@@ -202,6 +256,60 @@ public class ComprasView extends javax.swing.JFrame {
         pack();
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
+
+    private void btAddActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btAddActionPerformed
+
+        Produto produto = (Produto) jCProduto.getSelectedItem();
+        ModoCompra pagamento = (ModoCompra) jCPagamento.getSelectedItem();
+
+        listCom.add(new Compra(produto, Control.cliente, pagamento));
+        DefaultTableModel dtm = (DefaultTableModel) tbCompras.getModel();
+        // dtm.setNumRows(0);
+        p = (Produto) jCProduto.getSelectedItem();
+        dtm.addRow(new Object[]{
+            p.getNome(),
+            p.getPreco(),
+            p.getTempoGarantia(),
+            p.getDescricao(),
+            p.getCategoria().getNomeCategoria()
+        });
+
+
+    }//GEN-LAST:event_btAddActionPerformed
+
+    private void jCCategoriaFocusLost(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jCCategoriaFocusLost
+        jCProduto.removeAllItems();
+
+        JpaDao control = new JpaDao();
+        ca = (Categoria) jCCategoria.getSelectedItem();
+        listP = control.listar("from Produto p where p.categoria.nomeCategoria = '" + ca + "'");
+        for (Produto p : listP) {
+            jCProduto.addItem(p);
+        }
+
+
+    }//GEN-LAST:event_jCCategoriaFocusLost
+
+    private void jCCategoriaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jCCategoriaMouseClicked
+
+    }//GEN-LAST:event_jCCategoriaMouseClicked
+
+    private void jCCategoriaFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_jCCategoriaFocusGained
+
+    }//GEN-LAST:event_jCCategoriaFocusGained
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        if (listCom.isEmpty()) {
+
+        } else {
+            JpaDao jp = new JpaDao();
+            for (Compra compra : listCom) {
+                jp.salvar(compra);
+            }
+
+            JOptionPane.showMessageDialog(null, "Compra realizada");
+        }
+    }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -239,11 +347,11 @@ public class ComprasView extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
+    private javax.swing.JButton btAdd;
     private javax.swing.JButton jButton2;
-    private javax.swing.JComboBox<String> jComboBox1;
-    private javax.swing.JComboBox<String> jComboBox2;
-    private javax.swing.JComboBox<String> jComboBox3;
+    private javax.swing.JComboBox<Object> jCCategoria;
+    private javax.swing.JComboBox<Object> jCPagamento;
+    private javax.swing.JComboBox<Object> jCProduto;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -253,6 +361,6 @@ public class ComprasView extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable tbCompras;
     // End of variables declaration//GEN-END:variables
 }

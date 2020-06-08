@@ -16,6 +16,7 @@ public class ConsultarComprasAdmView extends javax.swing.JFrame {
      */
     public ConsultarComprasAdmView() {
         initComponents();
+        setExtendedState(MAXIMIZED_BOTH);
     }
 
     /**

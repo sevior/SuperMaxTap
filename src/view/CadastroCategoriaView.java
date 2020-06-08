@@ -5,7 +5,7 @@
  */
 package view;
 
-import control.JpaControl;
+import dao.JpaDao;
 import controlView.Control;
 import exceptions.ExceptionCamposVazios;
 import javax.swing.JOptionPane;
@@ -20,8 +20,12 @@ public class CadastroCategoriaView extends javax.swing.JFrame {
     /**
      * Creates new form CadastroCategoriaView
      */
+    private void limparCampos(){
+        txtCategoria.setText("");
+    }
     public CadastroCategoriaView() {
         initComponents();
+        setExtendedState(MAXIMIZED_BOTH);
     }
 
     /**
@@ -77,6 +81,11 @@ public class CadastroCategoriaView extends javax.swing.JFrame {
         jButton1.setBackground(new java.awt.Color(45, 76, 139));
         jButton1.setForeground(new java.awt.Color(255, 255, 255));
         jButton1.setText("Cancelar");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
 
         jButton2.setBackground(new java.awt.Color(45, 76, 139));
         jButton2.setForeground(new java.awt.Color(255, 255, 255));
@@ -152,7 +161,7 @@ public class CadastroCategoriaView extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        JpaControl control = new JpaControl();
+        JpaDao control = new JpaDao();
         Control controlV = new Control();
         if (controlV.categoria(txtCategoria.getText())) {
             try {
@@ -161,9 +170,16 @@ public class CadastroCategoriaView extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, ex);
             }
         } else {
+           
             control.salvar(new Categoria(txtCategoria.getText().toUpperCase()));
+            JOptionPane.showMessageDialog(null, "Categoria cadastrada com sucesso!");
+            this.limparCampos();
         }
     }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        this.limparCampos();
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments

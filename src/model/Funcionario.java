@@ -1,7 +1,6 @@
 package model;
 
 import java.math.BigInteger;
-import java.util.Calendar;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,12 +8,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-
 @Entity
 
 public class Funcionario extends Pessoa {
-    
-  
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,7 +18,7 @@ public class Funcionario extends Pessoa {
 
     @Column
     private String senha;
-    
+
     @Column
     private BigInteger salario;
 
@@ -37,8 +33,6 @@ public class Funcionario extends Pessoa {
     public BigInteger getSalario() {
         return salario;
     }
-    
-    
 
     public Funcionario() {
     }
@@ -48,9 +42,5 @@ public class Funcionario extends Pessoa {
         this.senha = senha;
         this.salario = salario;
     }
-
-    
-    
-    
 
 }

@@ -1,19 +1,12 @@
 package model;
 
-import java.math.BigInteger;
-import java.util.List;
-import javax.persistence.Column;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
-import javax.persistence.Table;
 
 /**
  *
@@ -35,8 +28,16 @@ public class Compra {
     @JoinColumn
     private Cliente cliente;
 
-    @Column
-    private BigInteger total;
+
+    @OneToOne
+    @JoinColumn
+    private ModoCompra modo;
+    
+    
+
+    public ModoCompra getModo() {
+        return modo;
+    }
 
     public int getId() {
         return id;
@@ -50,19 +51,15 @@ public class Compra {
         return cliente;
     }
 
-    public BigInteger getTotal() {
-        return total;
-    }
-    
-    
 
     public Compra() {
     }
 
-    public Compra(Produto produto, Cliente cliente, BigInteger total) {
+    public Compra(Produto produto, Cliente cliente, ModoCompra modo) {
         this.produto = produto;
         this.cliente = cliente;
-        this.total = total;
+        this.modo = modo;
+
     }
 
 }

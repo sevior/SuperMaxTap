@@ -5,9 +5,15 @@
  */
 package view;
 
-import control.JpaControl;
+import dao.JpaDao;
 import controlView.Control;
+import dao.DB;
+
 import exceptions.ExceptionCamposVazios;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import javax.swing.JOptionPane;
 import model.Contato;
 import model.Fabricante;
@@ -21,8 +27,17 @@ public class CadastroFabricanteView extends javax.swing.JFrame {
     /**
      * Creates new form CadastroFabricanteView
      */
+    private void limparCampos() {
+        txtCnpj.setText("");
+        txtEmail.setText("");
+        txtNomeFabricante.setText("");
+        txtTelefone.setText("");
+
+    }
+
     public CadastroFabricanteView() {
         initComponents();
+        setExtendedState(MAXIMIZED_BOTH);
     }
 
     /**
@@ -48,6 +63,8 @@ public class CadastroFabricanteView extends javax.swing.JFrame {
         txtTelefone = new javax.swing.JTextField();
         btnCancelar = new javax.swing.JButton();
         btnCadastrar = new javax.swing.JButton();
+        jComboBoxOp = new javax.swing.JComboBox<>();
+        jLabel6 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
@@ -75,7 +92,7 @@ public class CadastroFabricanteView extends javax.swing.JFrame {
         );
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Cadastro Fabricante", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Dialog", 0, 12), new java.awt.Color(45, 76, 139))); // NOI18N
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Cadastro Fabricante", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(45, 76, 139))); // NOI18N
 
         jLabel2.setForeground(new java.awt.Color(45, 76, 139));
         jLabel2.setText("Nome:");
@@ -98,6 +115,11 @@ public class CadastroFabricanteView extends javax.swing.JFrame {
         btnCancelar.setBackground(new java.awt.Color(45, 76, 139));
         btnCancelar.setForeground(new java.awt.Color(255, 255, 255));
         btnCancelar.setText("Cancelar");
+        btnCancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelarActionPerformed(evt);
+            }
+        });
 
         btnCadastrar.setBackground(new java.awt.Color(45, 76, 139));
         btnCadastrar.setForeground(new java.awt.Color(255, 255, 255));
@@ -108,6 +130,10 @@ public class CadastroFabricanteView extends javax.swing.JFrame {
             }
         });
 
+        jComboBoxOp.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "JDBC", "JPA" }));
+
+        jLabel6.setText("Operar com:");
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -115,29 +141,42 @@ public class CadastroFabricanteView extends javax.swing.JFrame {
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(32, 32, 32)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel2)
-                    .addComponent(jLabel4)
-                    .addComponent(jLabel5)
-                    .addComponent(jLabel3))
-                .addGap(173, 173, 173)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 89, Short.MAX_VALUE)
-                        .addComponent(btnCadastrar, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(txtNomeFabricante)
-                    .addComponent(txtCnpj)
-                    .addComponent(txtEmail)
-                    .addComponent(txtTelefone))
-                .addContainerGap(268, Short.MAX_VALUE))
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel4)
+                            .addComponent(jLabel5)
+                            .addComponent(jLabel3))
+                        .addGap(173, 173, 173)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 89, Short.MAX_VALUE)
+                                .addComponent(btnCadastrar, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(txtNomeFabricante)
+                            .addComponent(txtCnpj)
+                            .addComponent(txtEmail)
+                            .addComponent(txtTelefone))
+                        .addGap(0, 170, Short.MAX_VALUE))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel6)))
+                .addGap(18, 18, 18)
+                .addComponent(jComboBoxOp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(24, 24, 24))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(txtNomeFabricante, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel2)
+                            .addComponent(txtNomeFabricante, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jComboBoxOp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel6)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(txtCnpj, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -166,9 +205,9 @@ public class CadastroFabricanteView extends javax.swing.JFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap(100, Short.MAX_VALUE)
+                .addContainerGap(103, Short.MAX_VALUE)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(100, Short.MAX_VALUE))
+                .addContainerGap(103, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -195,7 +234,7 @@ public class CadastroFabricanteView extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastrarActionPerformed
-        JpaControl control = new JpaControl();
+        JpaDao control = new JpaDao();
         Control controlV = new Control();
         if (controlV.fabricante(txtEmail.getText(), txtCnpj.getText(), txtNomeFabricante.getText(), txtTelefone.getText())) {
             try {
@@ -204,13 +243,44 @@ public class CadastroFabricanteView extends javax.swing.JFrame {
                 JOptionPane.showMessageDialog(null, ex);
             }
         } else {
-            control.salvar(new Fabricante(txtNomeFabricante.getText(), txtCnpj.getText(), new Contato(txtEmail.getText(), txtTelefone.getText())));
+            if (jComboBoxOp.getSelectedItem().equals("JDBC")) {
+                try {
+                    Connection conn = null;
+                    conn = DB.getConnection();
+                    if (!conn.equals(null)) {
+
+                        Statement stm = (Statement) conn.createStatement();
+                        stm.executeUpdate("insert into `contato` (`numTelefone`, `email`) values ('" + txtTelefone.getText() + "', '" + txtEmail.getText() + "');");
+                        ResultSet rs = stm.executeQuery("select id from contato where email = " + txtEmail.getText() + ";");
+                        String id = null;
+                        while (rs.next()) {
+                            id = rs.getString("id");
+                        }
+                        int ids = Integer.parseInt(id);
+                        stm.executeUpdate("insert into `fabricante` (`nome`, `cnpj`, `contato_id`) values ('" + txtNomeFabricante.getText() + "', '" + txtCnpj.getText() + "', " + ids + ");");
+                        
+                    }
+                  
+                } catch (SQLException e) {
+                    
+                    e.printStackTrace();
+                } 
+                 DB.closeConnection();
+            } else {
+                control.salvar(new Fabricante(txtNomeFabricante.getText(), txtCnpj.getText(), new Contato(txtEmail.getText(), txtTelefone.getText())));
+                JOptionPane.showMessageDialog(null, "Fabricante cadastrado com sucesso!");
+                this.limparCampos();
+            }
         }
     }//GEN-LAST:event_btnCadastrarActionPerformed
 
+    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
+        this.limparCampos();
+    }//GEN-LAST:event_btnCancelarActionPerformed
+
     /**
-         * @param args the command line arguments
-         */
+     * @param args the command line arguments
+     */
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -246,11 +316,13 @@ public class CadastroFabricanteView extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCadastrar;
     private javax.swing.JButton btnCancelar;
+    private javax.swing.JComboBox<String> jComboBoxOp;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
     private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;

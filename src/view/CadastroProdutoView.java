@@ -5,7 +5,7 @@
  */
 package view;
 
-import control.JpaControl;
+import dao.JpaDao;
 import controlView.Control;
 import exceptions.ExceptionCamposVazios;
 import java.math.BigInteger;
@@ -25,9 +25,18 @@ public class CadastroProdutoView extends javax.swing.JFrame {
     /**
      * Creates new form CadastroMemoriaView
      */
+    private void limparCampos() {
+        txtNomeProduto.setText("");
+        txtPreco.setText("");
+        txtTempoGarantia.setText("");
+        txtDescricao.setText("");
+        
+    }
+
     public CadastroProdutoView() {
         initComponents();
-        JpaControl control = new JpaControl();
+        setExtendedState(MAXIMIZED_BOTH);
+        JpaDao control = new JpaDao();
         List<Categoria> listC = control.listar("from Categoria");
         List<Fabricante> listF = control.listar("from Fabricante");
         for (Categoria c : listC) {
@@ -94,7 +103,7 @@ public class CadastroProdutoView extends javax.swing.JFrame {
         );
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Cadastro de Memória:", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Dialog", 0, 12), new java.awt.Color(45, 76, 139))); // NOI18N
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Cadastro de Produtos:", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Dialog", 0, 12), new java.awt.Color(45, 76, 139))); // NOI18N
         jPanel3.setForeground(new java.awt.Color(45, 76, 139));
 
         jLabel2.setForeground(new java.awt.Color(45, 76, 139));
@@ -131,6 +140,11 @@ public class CadastroProdutoView extends javax.swing.JFrame {
         btnCancelar.setBackground(new java.awt.Color(45, 76, 139));
         btnCancelar.setForeground(new java.awt.Color(255, 255, 255));
         btnCancelar.setText("Cancelar");
+        btnCancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -189,11 +203,11 @@ public class CadastroProdutoView extends javax.swing.JFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel10)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(96, 96, 96)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGap(38, 38, 38)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnCadastrar, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(39, Short.MAX_VALUE))
+                .addContainerGap(97, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -232,10 +246,10 @@ public class CadastroProdutoView extends javax.swing.JFrame {
 
     private void btnCadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastrarActionPerformed
 
-        JpaControl control = new JpaControl();
+        JpaDao control = new JpaDao();
         Control controlV = new Control();
 
-        if (controlV.produto(txtDescricao.getText(), txtNomeProduto.getText(), txtPreco.getText(), txtTempoGarantia.getText()))  {
+        if (controlV.produto(txtDescricao.getText(), txtNomeProduto.getText(), txtPreco.getText(), txtTempoGarantia.getText())) {
 
             try {
                 throw new ExceptionCamposVazios();
@@ -249,10 +263,14 @@ public class CadastroProdutoView extends javax.swing.JFrame {
             Categoria categoria = (Categoria) cbCategoria.getSelectedItem();
             Fabricante fabricante = (Fabricante) cbFabricante.getSelectedItem();
             control.salvar(new Produto(txtDescricao.getText(), txtNomeProduto.getText(), preco, Integer.parseInt(txtTempoGarantia.getText()), categoria, fabricante));
-
-            this.dispose();
+            JOptionPane.showMessageDialog(null, "Produto cadastrado com sucesso!");
+            this.limparCampos();
         }
     }//GEN-LAST:event_btnCadastrarActionPerformed
+
+    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
+        this.limparCampos();
+    }//GEN-LAST:event_btnCancelarActionPerformed
 
     /**
      * @param args the command line arguments

@@ -31,10 +31,10 @@ public class Produto {
     @Column
     private int tempoGarantia;
     @ManyToOne()
-    @JoinColumn
+    @JoinColumn(name = "categoria_id")
     private Categoria categoria;
     @ManyToOne()
-    @JoinColumn
+    @JoinColumn(name = "fabricante_cnpj")
     private Fabricante fabricante;
 
     public int getId() {
@@ -78,5 +78,12 @@ public class Produto {
         this.fabricante = fabricante;
         this.descricao = descricao;
     }
+
+    @Override
+    public String toString() {
+        return nome; //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    
 
 }

@@ -5,6 +5,8 @@
  */
 package controlView;
 
+import model.Cliente;
+
 /**
  *
  * @author erasmo
@@ -53,5 +55,7 @@ public class Control {
             return false;
         }
     }
+    
+      public static Cliente cliente;
 
 }

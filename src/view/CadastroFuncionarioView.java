@@ -5,12 +5,11 @@
  */
 package view;
 
-import control.JpaControl;
+import dao.JpaDao;
 import controlView.Control;
 import exceptions.ExceptionCamposVazios;
 import java.math.BigInteger;
 import javax.swing.JOptionPane;
-import model.Cliente;
 import model.Contato;
 import model.Endereco;
 import model.Funcionario;
@@ -24,8 +23,25 @@ public class CadastroFuncionarioView extends javax.swing.JFrame {
     /**
      * Creates new form CadastroFuncionarioView
      */
+    private void limparCampos() {
+        txtNomeFuncionario.setText("");
+        txtSobreNomeFuncionario.setText("");
+        txtCpf.setText("");
+        txtEmail.setText("");
+        txtSalario.setText("");
+        txtSenha.setText("");
+        txtTelefone.setText("");
+        txtDataNascimento.setText("");
+        txtRua.setText("");
+        txtBairro.setText("");
+        txtNum.setText("");
+        txtCidade.setText("");
+        txtUf.setText("");
+    }
+
     public CadastroFuncionarioView() {
         initComponents();
+        setExtendedState(MAXIMIZED_BOTH);
     }
 
     /**
@@ -241,6 +257,11 @@ public class CadastroFuncionarioView extends javax.swing.JFrame {
         btnCancelar.setBackground(new java.awt.Color(45, 76, 139));
         btnCancelar.setForeground(new java.awt.Color(255, 255, 255));
         btnCancelar.setText("Cancelar");
+        btnCancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnCancelarActionPerformed(evt);
+            }
+        });
 
         btnCadastrar.setBackground(new java.awt.Color(45, 76, 139));
         btnCadastrar.setForeground(new java.awt.Color(255, 255, 255));
@@ -350,7 +371,7 @@ public class CadastroFuncionarioView extends javax.swing.JFrame {
     }//GEN-LAST:event_txtSenhaActionPerformed
 
     private void btnCadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastrarActionPerformed
-        JpaControl control = new JpaControl();
+        JpaDao control = new JpaDao();
         Control controlV = new Control();
 
         if (controlV.funcionario(txtSenha.getText(), txtNomeFuncionario.getText(), txtSobreNomeFuncionario.getText(), txtDataNascimento.getText(), txtCpf.getText(), txtTelefone.getText(), txtEmail.getText(), txtRua.getText(), txtTelefone.getText(), txtBairro.getText(), txtCidade.getText(), txtUf.getText(), txtSalario.getText())) {
@@ -363,11 +384,16 @@ public class CadastroFuncionarioView extends javax.swing.JFrame {
 
         } else {
             BigInteger salario = new BigInteger(txtSalario.getText());
-            control.salvar(new Funcionario(txtSenha.getText(),salario, txtNomeFuncionario.getText().toUpperCase(), txtSobreNomeFuncionario.getText().toUpperCase(), txtDataNascimento.getText().toUpperCase(), txtCpf.getText(), new Contato(txtEmail.getText().toUpperCase(), txtTelefone.getText()), new Endereco(txtRua.getText().toUpperCase(), Integer.parseInt(txtNum.getText()), txtBairro.getText().toUpperCase(), txtCidade.getText().toUpperCase(), txtUf.getText().toUpperCase())));
+            control.salvar(new Funcionario(txtSenha.getText(), salario, txtNomeFuncionario.getText().toUpperCase(), txtSobreNomeFuncionario.getText().toUpperCase(), txtDataNascimento.getText().toUpperCase(), txtCpf.getText(), new Contato(txtEmail.getText().toUpperCase(), txtTelefone.getText()), new Endereco(txtRua.getText().toUpperCase(), Integer.parseInt(txtNum.getText()), txtBairro.getText().toUpperCase(), txtCidade.getText().toUpperCase(), txtUf.getText().toUpperCase())));
+            JOptionPane.showMessageDialog(null, "Funcionário(a) cadastrado(a) com sucesso!");
+            this.limparCampos();
 
-            this.dispose();
         }
     }//GEN-LAST:event_btnCadastrarActionPerformed
+
+    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
+        this.limparCampos();
+    }//GEN-LAST:event_btnCancelarActionPerformed
 
     /**
      * @param args the command line arguments

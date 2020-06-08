@@ -5,7 +5,14 @@
  */
 package view;
 
+import controlView.Control;
+import dao.JpaDao;
+import java.util.List;
 import javax.swing.JOptionPane;
+import model.Cliente;
+import model.Funcionario;
+import model.Gerente;
+
 
 /**
  *
@@ -13,11 +20,13 @@ import javax.swing.JOptionPane;
  */
 public class LoginView extends javax.swing.JFrame {
 
+
     /**
      * Creates new form LoginFuncionarioView
      */
     public LoginView() {
         initComponents();
+        setExtendedState(MAXIMIZED_BOTH);
     }
 
     /**
@@ -54,20 +63,19 @@ public class LoginView extends javax.swing.JFrame {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(341, 341, 341)
+                .addComponent(jLabel1, javax.swing.GroupLayout.DEFAULT_SIZE, 701, Short.MAX_VALUE)
+                .addContainerGap())
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel1)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
+                .addGap(0, 22, Short.MAX_VALUE)
+                .addComponent(jLabel1))
         );
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Login", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Dialog", 0, 12), new java.awt.Color(45, 76, 139))); // NOI18N
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Login", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(45, 76, 139))); // NOI18N
 
         jLabel2.setBackground(new java.awt.Color(45, 76, 139));
         jLabel2.setForeground(new java.awt.Color(45, 76, 139));
@@ -94,13 +102,18 @@ public class LoginView extends javax.swing.JFrame {
                 btnEntrarActionPerformed(evt);
             }
         });
+        btnEntrar.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                btnEntrarKeyPressed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap(198, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addComponent(btnCadastrar, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -110,7 +123,7 @@ public class LoginView extends javax.swing.JFrame {
                     .addComponent(jLabel2)
                     .addComponent(txtEmail)
                     .addComponent(txtSenha))
-                .addContainerGap(185, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -134,19 +147,19 @@ public class LoginView extends javax.swing.JFrame {
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addGroup(jPanel1Layout.createSequentialGroup()
-                .addContainerGap(154, Short.MAX_VALUE)
-                .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(231, Short.MAX_VALUE))
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 2, Short.MAX_VALUE))
+                .addContainerGap(18, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -169,17 +182,62 @@ public class LoginView extends javax.swing.JFrame {
         cc.show(true);
     }//GEN-LAST:event_btnCadastrarActionPerformed
 
+
     private void btnEntrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEntrarActionPerformed
-        PainelPrincipalView pv = new PainelPrincipalView();
-        if(txtEmail.getText().equals("gicelio") ||  txtEmail.getText().equals("erasmo") && txtSenha.getText().equals("1234")){
-           pv.show(true);
-           this.dispose();
-           JOptionPane.showMessageDialog(null, "Bem Vindo "+txtEmail.getText());
-       } else {
-            JOptionPane.showMessageDialog(null, "Acesso negado, por favor tente novamente.");
-                    
+        PainelPrincipalView pp = new PainelPrincipalView();
+        PainelUsuarioView pu = new PainelUsuarioView();
+        JpaDao cc = new JpaDao();
+        boolean numeros = txtEmail.getText().matches("^\\d+$");
+
+        if (txtEmail.getText().contains(".COM")) {
+            List<Cliente> listCli = cc.listar("FROM Cliente");
+            for (Cliente cliente1 : listCli) {
+                if (txtEmail.getText().equals(cliente1.getEmail().toUpperCase()) && txtSenha.getText().equals(cliente1.getSenha())) {
+                    Control.cliente = cliente1;
+                    pu.show(true);
+                    this.dispose();
+                    JOptionPane.showMessageDialog(null, "Bem vindo(a), " + cliente1.getPrimeiroNome() + "\n Úsuario com permissões apenas de Consultas e Compras");
+
+                } else {
+
+                    JOptionPane.showMessageDialog(null, "Usuario não encontrado");
+                }
+            }
+
+        } else if (numeros) {
+            int matricula = Integer.parseInt(txtEmail.getText());
+            List<Funcionario> listFun = cc.listar("FROM Funcionario");
+            for (Funcionario funcionario : listFun) {
+                if (matricula == funcionario.getMatricula() && txtSenha.getText().equals(funcionario.getSenha())) {
+                    pp.show(true);
+                    this.dispose();
+                    JOptionPane.showMessageDialog(null, "Bem vindo(a), " + funcionario.getPrimeiroNome());
+
+                } else {
+
+                    JOptionPane.showMessageDialog(null, "Usuario não encontrado");
+                }
+            }
+        } else {
+            List<Gerente> listFun = cc.listar("FROM Gerente");
+            for (Gerente gerente : listFun) {
+
+                if (txtEmail.getText().equals(gerente.getNick().toUpperCase()) && txtSenha.getText().equals(gerente.getSenha())) {
+                    pp.show(true);
+                    this.dispose();
+                    JOptionPane.showMessageDialog(null, "Bem Vindo " + listFun.get(0).getPrimeiroNome());
+
+                } else {
+
+                    JOptionPane.showMessageDialog(null, "Usuario não encontrado");
+                }
+            }
         }
     }//GEN-LAST:event_btnEntrarActionPerformed
+
+    private void btnEntrarKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_btnEntrarKeyPressed
+
+    }//GEN-LAST:event_btnEntrarKeyPressed
 
     /**
      * @param args the command line arguments

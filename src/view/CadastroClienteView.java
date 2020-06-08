@@ -416,7 +416,7 @@ public class CadastroClienteView extends javax.swing.JFrame {
                         stm.executeUpdate("insert into `contato` (`email`,`numTelefone`) values ('" + txtEmail.getText() + "','" + txtTelefone.getText() + "');");
                         stm2.executeUpdate("insert into `endereco` (`bairro`,`cidade`,`numero`,`rua`,`uf`) values ('" + txtBairro.getText() + "','" + txtCidade.getText() + "','" + txtnumero.getText() + "','" + txtRua.getText() + "','" + txtUf.getText() + "');");
                         ResultSet rs = stm.executeQuery("select id from contato where email = '" + txtEmail.getText() + "' and numTelefone = "+txtTelefone.getText()+";");
-                        ResultSet rd = stm2.executeQuery("select id from endereco where bairro = " + txtBairro.getText() + " and cidade = " + txtCidade.getText() + " and numero = " + Integer.parseInt(txtnumero.getText()) + " and rua = " + txtRua.getText() + " and uf = " + txtUf.getText() + ";");
+                        ResultSet rd = stm2.executeQuery("select id from endereco where bairro = '" + txtBairro.getText() + "' and cidade = '" + txtCidade.getText() + "' and numero = " + Integer.parseInt(txtnumero.getText()) + " and rua = '" + txtRua.getText() + "' and uf = '" + txtUf.getText() + "' ;");
                         String id = null;
                         while (rs.next()) {
                             id = rs.getString("id");

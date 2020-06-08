@@ -44,7 +44,7 @@ public class ModoCompra {
     
     
 
-    public ModoCompra(String modo, int vezes) {
+    public ModoCompra(String modo) {
         this.modo = modo;
     
     }

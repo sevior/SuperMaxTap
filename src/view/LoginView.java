@@ -190,46 +190,40 @@ public class LoginView extends javax.swing.JFrame {
         boolean numeros = txtEmail.getText().matches("^\\d+$");
 
         if (txtEmail.getText().contains(".com")) {
+         
             List<Cliente> listCli = cc.listar("FROM Cliente");
             for (Cliente cliente1 : listCli) {
+                System.out.println("teste1");
                 if (txtEmail.getText().equals(cliente1.getEmail()) && txtSenha.getText().equals(cliente1.getSenha())) {
                     Control.cliente = cliente1;
                     pu.show(true);
                     this.dispose();
                     JOptionPane.showMessageDialog(null, "Bem vindo(a), " + cliente1.getPrimeiroNome() + "\n Úsuario com permissões apenas de Consultas e Compras");
 
-                } else {
-
-                    JOptionPane.showMessageDialog(null, "Usuario não encontrado");
                 }
             }
 
-        } else if (numeros) {
+        } else if (!txtEmail.getText().contains(".com")) {
             int matricula = Integer.parseInt(txtEmail.getText());
             List<Funcionario> listFun = cc.listar("FROM Funcionario");
             for (Funcionario funcionario : listFun) {
+                System.out.println("teste2");
                 if (matricula == funcionario.getMatricula() && txtSenha.getText().equals(funcionario.getSenha())) {
                     pp.show(true);
                     this.dispose();
                     JOptionPane.showMessageDialog(null, "Bem vindo(a), " + funcionario.getPrimeiroNome());
 
-                } else {
-
-                    JOptionPane.showMessageDialog(null, "Usuario não encontrado");
                 }
             }
         } else {
             List<Gerente> listFun = cc.listar("FROM Gerente");
             for (Gerente gerente : listFun) {
-
+                System.out.println("teste3");
                 if (txtEmail.getText().equals(gerente.getNick()) && txtSenha.getText().equals(gerente.getSenha())) {
                     pp.show(true);
                     this.dispose();
                     JOptionPane.showMessageDialog(null, "Bem Vindo " + listFun.get(0).getPrimeiroNome());
 
-                } else {
-
-                    JOptionPane.showMessageDialog(null, "Usuario não encontrado");
                 }
             }
         }

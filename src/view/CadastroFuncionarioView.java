@@ -411,8 +411,8 @@ public class CadastroFuncionarioView extends javax.swing.JFrame {
                         Statement stm = (Statement) conn.createStatement();
                         stm.executeUpdate("insert into `contato` (`email`,`numTelefone`) values ('" + txtEmail.getText() + "','" + txtTelefone.getText() + "');");
                         stm2.executeUpdate("insert into `endereco` (`bairro`,`cidade`,`numero`,`rua`,`uf`) values ('" + txtBairro.getText() + "','" + txtCidade.getText() + "'," + Integer.parseInt(txtNum.getText()) + ",'" + txtRua.getText() + "','" + txtUf.getText() + "');");
-                        ResultSet rs = stm.executeQuery("select id from contato where email = " + txtEmail.getText() + ";");
-                        ResultSet rd = stm2.executeQuery("select id from endereco where bairro = " + txtBairro.getText() + " and cidade = " + txtCidade.getText() + " and numero = " + txtNum.getText() + " and rua = " + txtRua.getText() + " and uf = " + txtUf.getText() + ";");
+                        ResultSet rs = stm.executeQuery("select id from contato where email = '" + txtEmail.getText() + "' ;");
+                        ResultSet rd = stm2.executeQuery("select id from endereco where bairro = '" + txtBairro.getText() + "' and cidade = '" + txtCidade.getText() + "' and numero = " + Integer.parseInt(txtNum.getText()) + " and rua = '" + txtRua.getText() + "' and uf = '" + txtUf.getText() + "';");
                         String id = null;
                         while (rs.next()) {
                             id = rs.getString("id");

@@ -6,7 +6,11 @@
 package view;
 
 import controlView.Control;
+import dao.DB;
 import dao.JpaDao;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
@@ -317,15 +321,37 @@ public class ComprasView extends javax.swing.JFrame {
     }//GEN-LAST:event_jCCategoriaFocusGained
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        Produto produto = (Produto) jCProduto.getSelectedItem();
+        ModoCompra pagamento = (ModoCompra) jCPagamento.getSelectedItem();
         if (listCom.isEmpty()) {
 
         } else {
-            JpaDao jp = new JpaDao();
-            for (Compra compra : listCom) {
-                jp.salvar(compra);
-            }
+            if (jComboBoxOp.getSelectedItem().equals("JDBC")) {
+                try {
+                    Connection conn = null;
+                    conn = DB.getConnection();
+                    if (!conn.equals(null)) {
+                        Statement stm = (Statement) conn.createStatement();
 
-            JOptionPane.showMessageDialog(null, "Compra realizada");
+                        for (Compra compra : listCom) {
+                            stm.executeUpdate("insert into `compra` (`produto_id`,`cliente_email`,`modo_id`) values ('" + compra.getProduto().getId() + "','" + Control.cliente.getEmail() + "'," + compra.getModo().getId() + ");");
+                        }
+                        JOptionPane.showMessageDialog(null, "Compra realizada");
+
+                    }
+
+                } catch (SQLException e) {
+
+                    e.printStackTrace();
+                }
+            } else {
+                JpaDao jp = new JpaDao();
+                for (Compra compra : listCom) {
+                    jp.salvar(compra);
+                }
+
+                JOptionPane.showMessageDialog(null, "Compra realizada");
+            }
         }
     }//GEN-LAST:event_jButton2ActionPerformed
 

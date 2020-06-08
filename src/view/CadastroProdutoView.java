@@ -7,8 +7,13 @@ package view;
 
 import dao.JpaDao;
 import controlView.Control;
+import dao.DB;
 import exceptions.ExceptionCamposVazios;
 import java.math.BigInteger;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 import javax.swing.JOptionPane;
 import model.Categoria;
@@ -30,7 +35,7 @@ public class CadastroProdutoView extends javax.swing.JFrame {
         txtPreco.setText("");
         txtTempoGarantia.setText("");
         txtDescricao.setText("");
-        
+
     }
 
     public CadastroProdutoView() {
@@ -261,7 +266,9 @@ public class CadastroProdutoView extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnCadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastrarActionPerformed
-
+        BigInteger preco = new BigInteger(txtPreco.getText());
+        Categoria categoria = (Categoria) cbCategoria.getSelectedItem();
+        Fabricante fabricante = (Fabricante) cbFabricante.getSelectedItem();
         JpaDao control = new JpaDao();
         Control controlV = new Control();
 
@@ -274,13 +281,29 @@ public class CadastroProdutoView extends javax.swing.JFrame {
             }
 
         } else {
+            if (jComboBoxOp.getSelectedItem().equals("JDBC")) {
+                try {
+                    Connection conn = null;
+                    conn = DB.getConnection();
+                    if (!conn.equals(null)) {
 
-            BigInteger preco = new BigInteger(txtPreco.getText());
-            Categoria categoria = (Categoria) cbCategoria.getSelectedItem();
-            Fabricante fabricante = (Fabricante) cbFabricante.getSelectedItem();
-            control.salvar(new Produto(txtDescricao.getText(), txtNomeProduto.getText(), preco, Integer.parseInt(txtTempoGarantia.getText()), categoria, fabricante));
-            JOptionPane.showMessageDialog(null, "Produto cadastrado com sucesso!");
-            this.limparCampos();
+                        Statement stm = (Statement) conn.createStatement();
+
+                        stm.executeUpdate("insert into `produto` (`descricao`,`nome`,`preco`,`tempoGarantia`,`fabricante_cnpj`,`categoria_id`) values ('" + txtDescricao.getText() + "','" + txtNomeProduto.getText() + "'," + txtPreco.getText() + ",'" + txtTempoGarantia.getText() + "','" + fabricante.getCnpj() + "'," + categoria.getId() + ");");
+                        JOptionPane.showMessageDialog(null, "Produto cadastrada com sucesso!");
+
+                    }
+
+                } catch (SQLException e) {
+
+                    e.printStackTrace();
+                }
+            } else {
+
+                control.salvar(new Produto(txtDescricao.getText(), txtNomeProduto.getText(), preco, Integer.parseInt(txtTempoGarantia.getText()), categoria, fabricante));
+                JOptionPane.showMessageDialog(null, "Produto cadastrado com sucesso!");
+                this.limparCampos();
+            }
         }
     }//GEN-LAST:event_btnCadastrarActionPerformed
 

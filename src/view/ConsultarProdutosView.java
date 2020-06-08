@@ -5,7 +5,12 @@
  */
 package view;
 
+import dao.DB;
 import dao.JpaDao;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -43,7 +48,6 @@ public class ConsultarProdutosView extends javax.swing.JFrame {
         btnConsultarTodos = new javax.swing.JButton();
         txtNomeProduto = new javax.swing.JTextField();
         btnConsultarNome = new javax.swing.JButton();
-        btnExcluir = new javax.swing.JButton();
         jComboBoxOp = new javax.swing.JComboBox<>();
         jLabel16 = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
@@ -105,15 +109,6 @@ public class ConsultarProdutosView extends javax.swing.JFrame {
             }
         });
 
-        btnExcluir.setBackground(new java.awt.Color(45, 76, 139));
-        btnExcluir.setForeground(new java.awt.Color(255, 255, 255));
-        btnExcluir.setText("Excluir");
-        btnExcluir.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnExcluirActionPerformed(evt);
-            }
-        });
-
         jComboBoxOp.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "JDBC", "JPA" }));
 
         jLabel16.setText("Operar com:");
@@ -133,8 +128,7 @@ public class ConsultarProdutosView extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(btnConsultarTodos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnConsultarNome, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(btnExcluir, javax.swing.GroupLayout.PREFERRED_SIZE, 79, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(btnConsultarNome, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 64, Short.MAX_VALUE)
                 .addComponent(jLabel16)
                 .addGap(18, 18, 18)
@@ -160,9 +154,7 @@ public class ConsultarProdutosView extends javax.swing.JFrame {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
                     .addComponent(btnConsultarTodos))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btnExcluir)
-                .addContainerGap(16, Short.MAX_VALUE))
+                .addContainerGap(45, Short.MAX_VALUE))
         );
 
         tbProdutos.setModel(new javax.swing.table.DefaultTableModel(
@@ -227,8 +219,48 @@ public class ConsultarProdutosView extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnConsultarNomeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultarNomeActionPerformed
-        JpaDao pc = new JpaDao();
-        List<Produto> lista = pc.listar("FROM Produto WHERE nome ='"+txtNomeProduto.getText()+"'");
+        JpaDao cc = new JpaDao();
+        if (jComboBoxOp.getSelectedItem().equals("JDBC")) {
+            try {
+                Connection conn = null;
+                conn = DB.getConnection();
+                if (!conn.equals(null)) {
+                    Statement stm = (Statement) conn.createStatement();
+                    ResultSet rd = stm.executeQuery("select produto.preco,produto.descricao,produto.nome,produto.tempoGarantia,fabricante.nome as fnome,categoria.nomeCategoria from fabricante inner join produto on fabricante_cnpj = fabricante.cnpj inner join categoria on categoria_id = categoria.id where produto.nome = '"+txtNomeProduto.getText()+"' ;");
+                    String nome = null;
+                    String descricao = null;
+                    String preco = null;
+                    String garantia = null;
+                    String categoria = null;
+                    String fabricante = null;
+
+                    DefaultTableModel dtm = (DefaultTableModel) tbProdutos.getModel();
+                    while (rd.next()) {
+                        nome = rd.getString("nome");
+                        descricao = rd.getString("descricao");
+                        preco = rd.getString("preco");
+                        garantia = rd.getString("tempoGarantia");
+                        categoria = rd.getString("nomeCategoria");
+                        fabricante = rd.getString("fnome");
+                        
+                        dtm.addRow(new Object[]{
+                            nome,
+                            descricao,
+                            preco,
+                            garantia,
+                            categoria,
+                            fabricante
+
+                        });
+                    }
+
+                }
+            } catch (SQLException e) {
+
+                e.printStackTrace();
+            }
+        } else {
+        List<Produto> lista = cc.listar("FROM Produto WHERE nome ='"+txtNomeProduto.getText()+"'");
         DefaultTableModel dtm = (DefaultTableModel) tbProdutos.getModel();
         dtm.setNumRows(0);
 
@@ -241,13 +273,54 @@ public class ConsultarProdutosView extends javax.swing.JFrame {
                 produto.getCategoria().getNomeCategoria(),
                 produto.getFabricante().getNome()
             });
+        }
         }
 
     }//GEN-LAST:event_btnConsultarNomeActionPerformed
 
     private void btnConsultarTodosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultarTodosActionPerformed
-        JpaDao pc = new JpaDao();
-        List<Produto> lista = pc.listar("From Produto");
+         JpaDao cc = new JpaDao();
+        if (jComboBoxOp.getSelectedItem().equals("JDBC")) {
+            try {
+                Connection conn = null;
+                conn = DB.getConnection();
+                if (!conn.equals(null)) {
+                    Statement stm = (Statement) conn.createStatement();
+                    ResultSet rd = stm.executeQuery("select produto.preco,produto.descricao,produto.nome,produto.tempoGarantia,fabricante.nome as fnome,categoria.nomeCategoria from fabricante inner join produto on fabricante_cnpj = fabricante.cnpj inner join categoria on categoria_id = categoria.id;");
+                    String nome = null;
+                    String descricao = null;
+                    String preco = null;
+                    String garantia = null;
+                    String categoria = null;
+                    String fabricante = null;
+
+                    DefaultTableModel dtm = (DefaultTableModel) tbProdutos.getModel();
+                    while (rd.next()) {
+                        nome = rd.getString("nome");
+                        descricao = rd.getString("descricao");
+                        preco = rd.getString("preco");
+                        garantia = rd.getString("tempoGarantia");
+                        categoria = rd.getString("nomeCategoria");
+                        fabricante = rd.getString("fnome");
+                        
+                        dtm.addRow(new Object[]{
+                            nome,
+                            descricao,
+                            preco,
+                            garantia,
+                            categoria,
+                            fabricante
+
+                        });
+                    }
+
+                }
+            } catch (SQLException e) {
+
+                e.printStackTrace();
+            }
+        } else {
+        List<Produto> lista = cc.listar("From Produto");
         DefaultTableModel dtm = (DefaultTableModel) tbProdutos.getModel();
         dtm.setNumRows(0);
 
@@ -261,21 +334,8 @@ public class ConsultarProdutosView extends javax.swing.JFrame {
                 produto.getFabricante().getNome()
             });
         }
-    }//GEN-LAST:event_btnConsultarTodosActionPerformed
-
-    private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
-        DefaultTableModel dtm = (DefaultTableModel) tbProdutos.getModel();
-        JpaDao control = new JpaDao();
-        String nome = tbProdutos.getModel().getValueAt(tbProdutos.getSelectedRow(), 0).toString();
-        
-        if (tbProdutos.getSelectedRow() == -1) {
-            JOptionPane.showMessageDialog(null, "Selecione um produto para excluir");
-        } else {
-            dtm.removeRow(tbProdutos.getSelectedRow());
-            control.deletar("DELETE FROM Produto WHERE nome = '" + nome + "'");
-            JOptionPane.showMessageDialog(null, "Produto excluido com sucesso!");
         }
-    }//GEN-LAST:event_btnExcluirActionPerformed
+    }//GEN-LAST:event_btnConsultarTodosActionPerformed
 
     /**
      * @param args the command line arguments
@@ -322,7 +382,6 @@ public class ConsultarProdutosView extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnConsultarNome;
     private javax.swing.JButton btnConsultarTodos;
-    private javax.swing.JButton btnExcluir;
     private javax.swing.JComboBox<String> jComboBoxOp;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel16;

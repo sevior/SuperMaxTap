@@ -27,16 +27,13 @@ public class ModoCompra {
     @Column
     private String modo;
 
-    @Column
-    private int vezes;
+
 
     public int getId() {
         return id;
     }
 
-    public int getVezes() {
-        return vezes;
-    }
+ 
 
     public String getModo() {
         return modo;
@@ -49,7 +46,7 @@ public class ModoCompra {
 
     public ModoCompra(String modo, int vezes) {
         this.modo = modo;
-        this.vezes = vezes;
+    
     }
 
     @Override

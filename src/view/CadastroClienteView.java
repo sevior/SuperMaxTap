@@ -7,7 +7,12 @@ package view;
 
 import dao.JpaDao;
 import controlView.Control;
+import dao.DB;
 import exceptions.ExceptionCamposVazios;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import javax.swing.JOptionPane;
 import model.Cliente;
 import model.Contato;
@@ -22,7 +27,7 @@ public class CadastroClienteView extends javax.swing.JFrame {
     /**
      * Creates new form CadastroClienteView
      */
-    public void limparCampos(){
+    public void limparCampos() {
         txtNomeCliente.setText("");
         txtSobreNomeCliente.setText("");
         txtCpf.setText("");
@@ -36,6 +41,7 @@ public class CadastroClienteView extends javax.swing.JFrame {
         txtUf.setText("");
         txtCidade.setText("");
     }
+
     public CadastroClienteView() {
         initComponents();
         setExtendedState(MAXIMIZED_BOTH);
@@ -69,6 +75,8 @@ public class CadastroClienteView extends javax.swing.JFrame {
         txtDataNascimento = new javax.swing.JFormattedTextField();
         jLabel12 = new javax.swing.JLabel();
         txtTelefone = new javax.swing.JTextField();
+        jComboBoxOp = new javax.swing.JComboBox<>();
+        jLabel14 = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
         jLabel8 = new javax.swing.JLabel();
         jLabel9 = new javax.swing.JLabel();
@@ -148,44 +156,60 @@ public class CadastroClienteView extends javax.swing.JFrame {
         jLabel12.setForeground(new java.awt.Color(45, 76, 139));
         jLabel12.setText("Telefone:");
 
+        jComboBoxOp.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "JDBC", "JPA" }));
+
+        jLabel14.setText("Operar com:");
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(148, Short.MAX_VALUE)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel3)
-                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
-                            .addComponent(jLabel7)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(txtDataNascimento, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
-                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(jLabel5)
-                                .addComponent(jLabel4)
-                                .addComponent(jLabel6)
-                                .addComponent(jLabel12)
-                                .addComponent(jLabel2))
-                            .addGap(101, 101, 101)
-                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(txtNomeCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(txtCpf, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtSenha, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
-                                    .addComponent(txtTelefone))
-                                .addComponent(txtSobreNomeCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
+                                .addComponent(jLabel7)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(txtDataNascimento, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.LEADING, jPanel3Layout.createSequentialGroup()
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel5)
+                                    .addComponent(jLabel4)
+                                    .addComponent(jLabel6)
+                                    .addComponent(jLabel12)
+                                    .addComponent(jLabel2))
+                                .addGap(101, 101, 101)
+                                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtNomeCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                        .addComponent(txtCpf, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(txtEmail, javax.swing.GroupLayout.PREFERRED_SIZE, 248, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(txtSenha, javax.swing.GroupLayout.DEFAULT_SIZE, 250, Short.MAX_VALUE)
+                                        .addComponent(txtTelefone))
+                                    .addComponent(txtSobreNomeCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel14)
+                        .addGap(18, 18, 18)
+                        .addComponent(jComboBoxOp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
-                .addContainerGap(16, Short.MAX_VALUE)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(txtNomeCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addContainerGap(16, Short.MAX_VALUE)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jLabel2)
+                            .addComponent(txtNomeCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jComboBoxOp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jLabel14))
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
@@ -372,21 +396,53 @@ public class CadastroClienteView extends javax.swing.JFrame {
     private void btnCadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastrarActionPerformed
         JpaDao control = new JpaDao();
         Control controlV = new Control();
-       
-            if (controlV.cliente(txtSenha.getText(), txtNomeCliente.getText(), txtSobreNomeCliente.getText(), txtDataNascimento.getText(), txtCpf.getText(), txtTelefone.getText(), txtEmail.getText(), txtRua.getText(), txtnumero.getText(), txtBairro.getText(), txtCidade.getText(), txtUf.getText())) {
 
-                try {
+        if (controlV.cliente(txtSenha.getText(), txtNomeCliente.getText(), txtSobreNomeCliente.getText(), txtDataNascimento.getText(), txtCpf.getText(), txtTelefone.getText(), txtEmail.getText(), txtRua.getText(), txtnumero.getText(), txtBairro.getText(), txtCidade.getText(), txtUf.getText())) {
+
+            try {
                 throw new ExceptionCamposVazios();
             } catch (ExceptionCamposVazios ex) {
                 JOptionPane.showMessageDialog(null, ex);
             }
 
+        } else {
+            if (jComboBoxOp.getSelectedItem().equals("JDBC")) {
+                try {
+                    Connection conn = null;
+                    conn = DB.getConnection();
+                    if (!conn.equals(null)) {
+                        Statement stm2 = (Statement) conn.createStatement();
+                        Statement stm = (Statement) conn.createStatement();
+                        stm.executeUpdate("insert into `contato` (`email`,`numTelefone`) values ('" + txtEmail.getText() + "','" + txtTelefone.getText() + "');");
+                        stm2.executeUpdate("insert into `endereco` (`bairro`,`cidade`,`numero`,`rua`,`uf`) values ('" + txtBairro.getText() + "','" + txtCidade.getText() + "','" + txtnumero.getText() + "','" + txtRua.getText() + "','" + txtUf.getText() + "');");
+                        ResultSet rs = stm.executeQuery("select id from contato where email = " + txtEmail.getText() + ";");
+                        ResultSet rd = stm2.executeQuery("select id from endereco where bairro = " + txtBairro.getText() + " and cidade = " + txtCidade.getText() + " and numero = " + txtnumero.getText() + " and rua = " + txtRua.getText() + " and uf = " + txtUf.getText() + ";");
+                        String id = null;
+                        while (rs.next()) {
+                            id = rs.getString("id");
+                        }
+                        String id2 = null;
+                        while (rd.next()) {
+                            id2 = rd.getString("id");
+                        }
+                        int ids = Integer.parseInt(id);
+                        int idsa = Integer.parseInt(id2);
+                        stm.executeUpdate("insert into `cliente` (`email`, `cpf`,`idade`,`primeiroNome`,`segundoNome`,`senha`,`endereco_id`,`contatos_id`) values ('" + txtEmail.getText() + "','" + txtCpf.getText() + "','" + txtDataNascimento.getText() + "','" + txtNomeCliente.getText() + "','" + txtSobreNomeCliente.getText() + "','" + txtSenha.getText() + "'," + idsa + "," + ids + ");");
+                        JOptionPane.showMessageDialog(null, "Cliente cadastrada com sucesso!");
+                    }
+
+                } catch (SQLException e) {
+
+                    e.printStackTrace();
+                }
             } else {
-                control.salvar(new Cliente(txtEmail.getText().toUpperCase(), txtSenha.getText(), txtNomeCliente.getText().toUpperCase(), txtSobreNomeCliente.getText().toUpperCase(), txtDataNascimento.getText().toUpperCase(), txtCpf.getText(), new Contato(txtEmail.getText().toUpperCase(), txtTelefone.getText()), new Endereco(txtRua.getText().toUpperCase(), Integer.parseInt(txtnumero.getText()), txtBairro.getText().toUpperCase(), txtCidade.getText().toUpperCase(), txtUf.getText().toUpperCase())));
+
+                control.salvar(new Cliente(txtEmail.getText(), txtSenha.getText(), txtNomeCliente.getText().toUpperCase(), txtSobreNomeCliente.getText().toUpperCase(), txtDataNascimento.getText(), txtCpf.getText(), new Contato(txtEmail.getText().toUpperCase(), txtTelefone.getText()), new Endereco(txtRua.getText().toUpperCase(), Integer.parseInt(txtnumero.getText()), txtBairro.getText().toUpperCase(), txtCidade.getText(), txtUf.getText())));
                 JOptionPane.showMessageDialog(null, "Cliente cadastrado(a) com sucesso!");
                 this.limparCampos();
             }
-        
+
+        }
     }//GEN-LAST:event_btnCadastrarActionPerformed
 
     private void txtnumeroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtnumeroActionPerformed
@@ -394,7 +450,7 @@ public class CadastroClienteView extends javax.swing.JFrame {
     }//GEN-LAST:event_txtnumeroActionPerformed
 
     private void txtNomeClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNomeClienteActionPerformed
-       
+
     }//GEN-LAST:event_txtNomeClienteActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
@@ -439,11 +495,13 @@ public class CadastroClienteView extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCadastrar;
     private javax.swing.JButton btnCancelar;
+    private javax.swing.JComboBox<String> jComboBoxOp;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
+    private javax.swing.JLabel jLabel14;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;

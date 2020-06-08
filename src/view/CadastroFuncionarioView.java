@@ -7,8 +7,13 @@ package view;
 
 import dao.JpaDao;
 import controlView.Control;
+import dao.DB;
 import exceptions.ExceptionCamposVazios;
 import java.math.BigInteger;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import javax.swing.JOptionPane;
 import model.Contato;
 import model.Endereco;
@@ -73,6 +78,8 @@ public class CadastroFuncionarioView extends javax.swing.JFrame {
         txtSenha = new javax.swing.JPasswordField();
         txtSalario = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
+        jLabel15 = new javax.swing.JLabel();
+        jComboBoxOp = new javax.swing.JComboBox<>();
         jPanel4 = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
         jLabel11 = new javax.swing.JLabel();
@@ -113,7 +120,7 @@ public class CadastroFuncionarioView extends javax.swing.JFrame {
         );
 
         jPanel3.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Dados Pessoais:", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Dialog", 0, 12), new java.awt.Color(45, 76, 139))); // NOI18N
+        jPanel3.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Dados Pessoais:", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(45, 76, 139))); // NOI18N
 
         jLabel2.setForeground(new java.awt.Color(45, 76, 139));
         jLabel2.setText("Nome:");
@@ -157,6 +164,10 @@ public class CadastroFuncionarioView extends javax.swing.JFrame {
         jLabel6.setForeground(new java.awt.Color(45, 76, 139));
         jLabel6.setText("Salario:");
 
+        jLabel15.setText("Operar com:");
+
+        jComboBoxOp.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "JDBC", "JPA" }));
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
@@ -172,13 +183,18 @@ public class CadastroFuncionarioView extends javax.swing.JFrame {
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addGap(130, 130, 130)
-                                .addComponent(txtCpf, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(txtCpf, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(0, 0, Short.MAX_VALUE))
                             .addGroup(jPanel3Layout.createSequentialGroup()
                                 .addGap(128, 128, 128)
                                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                                     .addComponent(txtNomeFuncionario, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(txtSobreNomeFuncionario, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))))
-                        .addGap(0, 0, Short.MAX_VALUE))
+                                    .addComponent(txtSobreNomeFuncionario, javax.swing.GroupLayout.PREFERRED_SIZE, 250, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jLabel15)
+                                .addGap(18, 18, 18)
+                                .addComponent(jComboBoxOp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(26, 26, 26))))
                     .addGroup(jPanel3Layout.createSequentialGroup()
                         .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel9)
@@ -204,9 +220,13 @@ public class CadastroFuncionarioView extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel2)
-                    .addComponent(txtNomeFuncionario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jComboBoxOp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(jLabel15))
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel2)
+                        .addComponent(txtNomeFuncionario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
@@ -239,7 +259,7 @@ public class CadastroFuncionarioView extends javax.swing.JFrame {
         );
 
         jPanel4.setBackground(new java.awt.Color(255, 255, 255));
-        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Endereço:", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Dialog", 0, 12), new java.awt.Color(45, 76, 139))); // NOI18N
+        jPanel4.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Endereço:", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, new java.awt.Font("Tahoma", 0, 11), new java.awt.Color(45, 76, 139))); // NOI18N
         jPanel4.setForeground(new java.awt.Color(255, 255, 255));
 
         jLabel10.setForeground(new java.awt.Color(45, 76, 139));
@@ -381,8 +401,37 @@ public class CadastroFuncionarioView extends javax.swing.JFrame {
             } catch (ExceptionCamposVazios ex) {
                 JOptionPane.showMessageDialog(null, ex);
             }
+        }else{
+       if (jComboBoxOp.getSelectedItem().equals("JDBC")) {
+                try {
+                    Connection conn = null;
+                    conn = DB.getConnection();
+                    if (!conn.equals(null)) {
+                        Statement stm2 = (Statement) conn.createStatement();
+                        Statement stm = (Statement) conn.createStatement();
+                        stm.executeUpdate("insert into `contato` (`email`,`numTelefone`) values ('" + txtEmail.getText() + "','" + txtTelefone.getText() + "');");
+                        stm2.executeUpdate("insert into `endereco` (`bairro`,`cidade`,`numero`,`rua`,`uf`) values ('" + txtBairro.getText() + "','" + txtCidade.getText() + "','" + txtNum.getText() + "','" + txtRua.getText() + "','" + txtUf.getText() + "');");
+                        ResultSet rs = stm.executeQuery("select id from contato where email = " + txtEmail.getText() + ";");
+                        ResultSet rd = stm2.executeQuery("select id from endereco where bairro = " + txtBairro.getText() + " and cidade = " + txtCidade.getText() + " and numero = " + txtNum.getText() + " and rua = " + txtRua.getText() + " and uf = " + txtUf.getText() + ";");
+                        String id = null;
+                        while (rs.next()) {
+                            id = rs.getString("id");
+                        }
+                        String id2 = null;
+                        while (rd.next()) {
+                            id2 = rd.getString("id");
+                        }
+                        int ids = Integer.parseInt(id);
+                        int idsa = Integer.parseInt(id2);
+                        stm.executeUpdate("insert into `funcionario` (`cpf`,`idade`,`primeiroNome`,`segundoNome`,`salario`,`senha`,`endereco_id`,`contatos_id`) values ('" + txtCpf.getText() + "','" + txtDataNascimento.getText() + "','" + txtNomeFuncionario.getText() + "','" + txtSobreNomeFuncionario.getText() + "','"+txtSalario.getText()+"','" + txtSenha.getText() + "'," + idsa + "," + ids + ");");
+                        JOptionPane.showMessageDialog(null, "Funcionario cadastrada com sucesso!");
+                    }
 
-        } else {
+                } catch (SQLException e) {
+
+                    e.printStackTrace();
+                }
+            } else {
             BigInteger salario = new BigInteger(txtSalario.getText());
             control.salvar(new Funcionario(txtSenha.getText(), salario, txtNomeFuncionario.getText().toUpperCase(), txtSobreNomeFuncionario.getText().toUpperCase(), txtDataNascimento.getText().toUpperCase(), txtCpf.getText(), new Contato(txtEmail.getText().toUpperCase(), txtTelefone.getText()), new Endereco(txtRua.getText().toUpperCase(), Integer.parseInt(txtNum.getText()), txtBairro.getText().toUpperCase(), txtCidade.getText().toUpperCase(), txtUf.getText().toUpperCase())));
             JOptionPane.showMessageDialog(null, "Funcionário(a) cadastrado(a) com sucesso!");
@@ -390,7 +439,7 @@ public class CadastroFuncionarioView extends javax.swing.JFrame {
 
         }
     }//GEN-LAST:event_btnCadastrarActionPerformed
-
+}
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
         this.limparCampos();
     }//GEN-LAST:event_btnCancelarActionPerformed
@@ -433,12 +482,14 @@ public class CadastroFuncionarioView extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCadastrar;
     private javax.swing.JButton btnCancelar;
+    private javax.swing.JComboBox<String> jComboBoxOp;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
     private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel14;
+    private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;

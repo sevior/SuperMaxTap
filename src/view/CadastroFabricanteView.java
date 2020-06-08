@@ -265,7 +265,7 @@ public class CadastroFabricanteView extends javax.swing.JFrame {
                     
                     e.printStackTrace();
                 } 
-                 DB.closeConnection();
+              
             } else {
                 control.salvar(new Fabricante(txtNomeFabricante.getText(), txtCnpj.getText(), new Contato(txtEmail.getText(), txtTelefone.getText())));
                 JOptionPane.showMessageDialog(null, "Fabricante cadastrado com sucesso!");
